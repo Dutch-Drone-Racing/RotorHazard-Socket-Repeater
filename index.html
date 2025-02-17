@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RotorHazard Socket Repeater</title>
+    <link rel="stylesheet" href="./assets/fonts/teko/stylesheet.css">
+    <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+<body>
+    <br>
+    <img src="./assets/img/ddr_logo.png" alt="Dutch Drone Racing Logo" / height="86px">
+    <h1>RotorHazard Socket Repeater</h1>
+
+    <label for="lapTimerIp">RotorHazard IP + Port:</label>
+    <input type="text" id="lapTimerIp" placeholder="http://192.168.1.100:PORT" />
+    <br>
+    <label for="repeaterPort">Repeater Port:</label>
+    <input type="number" id="repeaterPort" placeholder="3000" />
+    <br>
+
+    <button onclick="startRepeater()">Start Repeater</button>
+    <button onclick="stopRepeater()" class="danger">Stop Repeater</button>
+
+    <p>Repeater runs on: <span id="local-ip">Laden...</span></p>
+
+    <h2>Console Output</h2>
+    <div id="console"></div>
+    <button onclick="clearConsole()" class="grey">Clean Console</button>
+
+
+    <div class="footer">
+        <div class="footer_l">Made for</div>
+        <div class="rh_logo"><img src="./assets/img/rotorhazard.png" alt="RotorHazard Logo" / height="24px"></div>
+        <div class="footer_r">RotorHazard</span>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>

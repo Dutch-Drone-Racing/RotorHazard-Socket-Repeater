@@ -1,0 +1,90 @@
+body {
+    font-family: Helvetica, sans-serif;
+    text-align: center;
+    padding: 0px;
+    margin: 0px;
+    background-color: #0C0D3A;
+    color: #fff;
+}
+
+h1,h2,h3 {
+    font-weight: 400;
+    font-family: 'Teko', sans-serif;
+    line-height: 1;;
+}
+
+button, input {
+    margin: 10px;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #03031c;
+    border: 0;
+    border-radius: 7px;
+    color: #fff;
+}
+
+button {
+    background-color: #006BFF;
+}
+
+button.danger {
+    background-color: #FF0000;
+}
+
+button.grey {
+    background-color: #313131;
+    color: #c2c2c2;
+}
+
+#console {
+    width: 90%;
+    height: 200px;
+    border: 1px solid #000;
+    overflow-y: scroll;
+    text-align: left;
+    margin: 10px auto;
+    padding: 5px;
+    background: #000000;
+    color: #cecece;
+}
+
+
+.log-entry {
+    font-size: 14px;
+}
+
+#local-ip {
+    font-weight: bold;
+    color: green;
+}
+
+
+.footer {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+}
+
+.footer div {
+    display: block;
+    float: left;
+    height: 24px;
+    font-size: 12px;
+}
+
+.footer_l {
+    width: calc(50% - 16px);
+    text-align: right;
+    padding-top: 6px;
+}
+.footer_r {
+    width: calc(50% - 16px);
+    text-align: left;
+    padding-top: 6px;
+
+}
+
+.rh_logo img {
+    margin: 0px 4px;
+}
+
