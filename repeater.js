@@ -1,6 +1,9 @@
 const io = require('socket.io');
 const clientIo = require('socket.io-client');
 const os = require('os');
+const { log } = require('console');
+
+var pilot_data;
 
 let server, lapTimerSocket;
 let lapTimerUrl = '';
@@ -16,17 +19,29 @@ function getLocalIp() {
             }
         }
     }
-    return 'Onbekend';
+    return 'Unknown';
 }
+
 
 function logMessage(message) {
     console.log(message); 
     logCallback(message);
 }
 
+function handlePilotData(socket){
+    logMessage(`Pilot Data from Memory: ${JSON.stringify(pilot_data)}`);
+    socket.emit('pilot_data', pilot_data);
+}
+
+function pilotDataRequest(lapTimerSocket){
+    data_dependencies = ['pilot_data'];
+    lapTimerSocket.emit('load_data', {'load_types': data_dependencies});
+    logMessage('Pilot data requested');
+}
+
 function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
     if (server) {
-        logMessage("Repeater draait al.");
+        logMessage("Repeater already running.");
         return;
     }
 
@@ -34,7 +49,7 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
     repeaterPort = newRepeaterPort;
     logCallback = logCb;
 
-    logMessage(`Verbinding maken met laptimer op: ${lapTimerUrl}`);
+    logMessage(`Connecting with RotorHazard on: ${lapTimerUrl}`);
 
     lapTimerSocket = clientIo(lapTimerUrl, {
         transports: ["websocket"]
@@ -45,12 +60,30 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
     });
 
     server.on('connection', (socket) => {
-        logMessage(`Nieuw client connected: ${socket.id}`);
+        logMessage(`New client connected: ${socket.id}`);
 
-        socket.onAny((event, ...args) => {
-            logMessage(`📤 Overlay request received: ${event} - Data: ${JSON.stringify(args)}`);
-            lapTimerSocket.emit(event, ...args);
+
+        socket.on('load_data', (data) => {        
+            if (data.load_types && Array.isArray(data.load_types)) {
+                if (data.load_types.includes('pilot_data')) {
+                    handlePilotData(socket);
+                    data.load_types = data.load_types.filter(type => type !== 'pilot_data');
+                }
+            }            
+            lapTimerSocket.emit('load_data', data);
         });
+
+        socket.on('get_pi_time', (data) => {
+            logMessage(`Data received: ${JSON.stringify(data)}`);
+            lapTimerSocket.emit('get_pi_time', data);
+        });
+   
+        socket.on('get_race_scheduled', (data) => {
+            logMessage(`Data received: ${JSON.stringify(data)}`);
+            lapTimerSocket.emit('get_race_scheduled', data);
+        });
+
+
 
 
         lapTimerSocket.on('pi_time', (data) => {
@@ -101,6 +134,7 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
 
         lapTimerSocket.on('pilot_data', (data) => {
             logMessage(`Data received: ${JSON.stringify(data)}`);
+            pilot_data = data;
             socket.emit('pilot_data', data);
         });
 
@@ -117,6 +151,8 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
     });
 
     logMessage(`Repeater started on ${getLocalIp()}:${repeaterPort}`);
+    pilotDataRequest(lapTimerSocket);
+
 }
 
 function stopRepeater() {
@@ -129,4 +165,9 @@ function stopRepeater() {
     }
 }
 
-module.exports = { startRepeater, stopRepeater, getLocalIp };
+function getLapTimerSocket() {
+    return lapTimerSocket;
+}
+
+
+module.exports = { startRepeater, stopRepeater, getLocalIp, getLapTimerSocket, pilotDataRequest };

@@ -1,7 +1,16 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
-const { startRepeater, stopRepeater, getLocalIp } = require('./repeater');
+const { startRepeater, stopRepeater, getLocalIp, getLapTimerSocket, pilotDataRequest } = require('./repeater');
 
 let mainWindow;
+
+ipcMain.on('request-pilot-data', () => {
+    const lapTimerSocket = getLapTimerSocket();
+    if (lapTimerSocket) {
+        pilotDataRequest(lapTimerSocket);
+    } else {
+        console.log("❌ Geen verbinding met de laptimer socket.");
+    }
+});
 
 app.whenReady().then(() => {
     mainWindow = new BrowserWindow({
