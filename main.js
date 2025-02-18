@@ -8,7 +8,7 @@ ipcMain.on('request-pilot-data', () => {
     if (lapTimerSocket) {
         pilotDataRequest(lapTimerSocket);
     } else {
-        console.log("❌ Geen verbinding met de laptimer socket.");
+        console.log("❌ No connection with RotorHazard socket.");
     }
 });
 
