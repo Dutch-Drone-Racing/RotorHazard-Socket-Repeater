@@ -4,6 +4,11 @@ const os = require('os');
 const { log } = require('console');
 
 var pilot_data;
+var class_data;
+var heat_data;
+var leaderboard;
+
+var initial_connection = 0;
 
 let server, lapTimerSocket;
 let lapTimerUrl = '';
@@ -33,8 +38,23 @@ function handlePilotData(socket){
     socket.emit('pilot_data', pilot_data);
 }
 
+function handleClassData(socket){
+    logMessage(`Class Data from Memory: ${JSON.stringify(class_data)}`);
+    socket.emit('class_data', class_data);
+}
+
+function handleHeatData(socket){
+    logMessage(`Heat Data from Memory: ${JSON.stringify(heat_data)}`);
+    socket.emit('heat_data', heat_data);
+}
+
+function handleLeaderboardData(socket){
+    logMessage(`Leaderboard from Memory: ${JSON.stringify(leaderboard)}`);
+    socket.emit('leaderboard', leaderboard);
+}
+
 function pilotDataRequest(lapTimerSocket){
-    data_dependencies = ['pilot_data'];
+    data_dependencies = ['leaderboard', 'pilot_data', 'class_data', 'heat_data'];
     lapTimerSocket.emit('load_data', {'load_types': data_dependencies});
     logMessage('Pilot data requested');
 }
@@ -61,6 +81,11 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
 
     server.on('connection', (socket) => {
         logMessage(`New client connected: ${socket.id}`);
+        
+        if (initial_connection == 0){
+            initial_connection = 1;
+            pilotDataRequest(lapTimerSocket);
+        }
 
 
         socket.on('load_data', (data) => {        
@@ -68,6 +93,18 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
                 if (data.load_types.includes('pilot_data')) {
                     handlePilotData(socket);
                     data.load_types = data.load_types.filter(type => type !== 'pilot_data');
+                }
+                if (data.load_types.includes('class_data')) {
+                    handleClassData(socket);
+                    data.load_types = data.load_types.filter(type => type !== 'class_data');
+                }
+                if (data.load_types.includes('heat_data')) {
+                    handleHeatData(socket);
+                    data.load_types = data.load_types.filter(type => type !== 'heat_data');
+                }
+                if (data.load_types.includes('leaderboard')) {
+                    handleLeaderboardData(socket);
+                    data.load_types = data.load_types.filter(type => type !== 'leaderboard');
                 }
             }            
             lapTimerSocket.emit('load_data', data);
@@ -83,16 +120,13 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
             lapTimerSocket.emit('get_race_scheduled', data);
         });
 
-
-
-
         lapTimerSocket.on('pi_time', (data) => {
             logMessage(`Data received: ${JSON.stringify(data)}`);
             socket.emit('pi_time', data);
         });
 
         lapTimerSocket.on('current_heat', (data) => {
-            logMessage(`Data received: ${JSON.stringify(data)}`);
+            logMessage(`Current Heat Data received: ${JSON.stringify(data)}`);
             socket.emit('current_heat', data);
         });
 
@@ -102,47 +136,67 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
         });
 
         lapTimerSocket.on('race_status', (data) => {
-            logMessage(`Data received: ${JSON.stringify(data)}`);
+            logMessage(`RS Data received: ${JSON.stringify(data)}`);
             socket.emit('race_status', data);
         });
 
-        lapTimerSocket.on('leaderboard', (data) => {
-            logMessage(`Data received: ${JSON.stringify(data)}`);
-            socket.emit('leaderboard', data);
-        });
-
         lapTimerSocket.on('prestage_ready', (data) => {
-            logMessage(`Data received: ${JSON.stringify(data)}`);
+            logMessage(`PR Data received: ${JSON.stringify(data)}`);
             socket.emit('prestage_ready', data);
         });
 
         lapTimerSocket.on('stage_ready', (data) => {
-            logMessage(`Data received: ${JSON.stringify(data)}`);
+            logMessage(`SR Data received: ${JSON.stringify(data)}`);
             socket.emit('stage_ready', data);
         });
 
         lapTimerSocket.on('stop_timer', (data) => {
-            logMessage(`Data received: ${JSON.stringify(data)}`);
+            logMessage(`ST Data received: ${JSON.stringify(data)}`);
             socket.emit('stop_timer', data);
         });
 
 
         lapTimerSocket.on('result_data', (data) => {
-            logMessage(`Data received: ${JSON.stringify(data)}`);
+            logMessage(`RD Data received: ${JSON.stringify(data)}`);
             socket.emit('result_data', data);
         });
 
-        lapTimerSocket.on('pilot_data', (data) => {
-            logMessage(`Data received: ${JSON.stringify(data)}`);
-            pilot_data = data;
-            socket.emit('pilot_data', data);
-        });
 
         lapTimerSocket.on('current_laps', (data) => {
             logMessage(`Data received: ${JSON.stringify(data)}`);
             socket.emit('current_laps', data);
         });
 
+        lapTimerSocket.on('race_list', (data) => {
+            logMessage(`Racelist Data received: ${JSON.stringify(data)}`);
+            socket.emit('race_list', data);
+        });
+        
+
+
+        lapTimerSocket.on('leaderboard', (data) => {
+            logMessage(`LB Data received: ${JSON.stringify(data)}`);
+            leaderboard = data;
+            socket.emit('leaderboard', data);
+        });
+
+        lapTimerSocket.on('pilot_data', (data) => {
+            logMessage(`PD Data received: ${JSON.stringify(data)}`);
+            pilot_data = data;
+            socket.emit('pilot_data', data);
+        });
+
+        lapTimerSocket.on('heat_data', (data) => {
+            logMessage(`heat_data Data received: ${JSON.stringify(data)}`);
+            heat_data = data;
+            socket.emit('heat_data', data);
+        });
+        
+        lapTimerSocket.on('class_data', (data) => {
+            logMessage(`class_data Data received: ${JSON.stringify(data)}`);
+            class_data = data;
+            socket.emit('class_data', data);
+        });
         
 
         socket.on('disconnect', () => {
@@ -151,7 +205,6 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
     });
 
     logMessage(`Repeater started on ${getLocalIp()}:${repeaterPort}`);
-    pilotDataRequest(lapTimerSocket);
 
 }
 
