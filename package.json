@@ -1,6 +1,6 @@
 {
   "name": "rh-repeater",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "main.js",
   "scripts": {
@@ -33,6 +33,11 @@
     "linux": {
       "target": "AppImage",
       "icon": "assets/icons/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
     }
   }
 }
