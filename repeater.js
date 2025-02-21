@@ -7,6 +7,8 @@ var pilot_data;
 var class_data;
 var heat_data;
 var leaderboard;
+var result_data;
+
 
 var initial_connection = 0;
 
@@ -53,8 +55,13 @@ function handleLeaderboardData(socket){
     socket.emit('leaderboard', leaderboard);
 }
 
+function handleResultData(socket){
+    logMessage(`Result Data from Memory: ${JSON.stringify(result_data)}`);
+    socket.emit('result_data', result_data);
+}
+
 function pilotDataRequest(lapTimerSocket){
-    data_dependencies = ['leaderboard', 'pilot_data', 'class_data', 'heat_data'];
+    data_dependencies = ['leaderboard', 'pilot_data', 'class_data', 'heat_data', 'result_data'];
     lapTimerSocket.emit('load_data', {'load_types': data_dependencies});
     logMessage('Pilot data requested');
 }
@@ -105,6 +112,10 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
                 if (data.load_types.includes('leaderboard')) {
                     handleLeaderboardData(socket);
                     data.load_types = data.load_types.filter(type => type !== 'leaderboard');
+                }
+                if (data.load_types.includes('result_data')) {
+                    handleResultData(socket);
+                    data.load_types = data.load_types.filter(type => type !== 'result_data');
                 }
             }            
             lapTimerSocket.emit('load_data', data);
@@ -197,7 +208,12 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
             class_data = data;
             socket.emit('class_data', data);
         });
-        
+
+        lapTimerSocket.on('result_data', (data) => {
+            logMessage(`result_data Data received: ${JSON.stringify(data)}`);
+            result_data = data;
+            socket.emit('result_data', data);
+        });
 
         socket.on('disconnect', () => {
             logMessage(`Client disconnected: ${socket.id}`);
