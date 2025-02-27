@@ -79,7 +79,7 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
     logMessage(`Connecting with RotorHazard on: ${lapTimerUrl}`);
 
     lapTimerSocket = clientIo(lapTimerUrl, {
-        transports: ["websocket"]
+        transports: ["polling", "websocket"]
     });
 
     server = io(repeaterPort, {
@@ -184,7 +184,6 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
         });
         
 
-
         lapTimerSocket.on('leaderboard', (data) => {
             logMessage(`LB Data received: ${JSON.stringify(data)}`);
             leaderboard = data;
@@ -221,7 +220,6 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
     });
 
     logMessage(`Repeater started on ${getLocalIp()}:${repeaterPort}`);
-
 }
 
 function stopRepeater() {
