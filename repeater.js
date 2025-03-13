@@ -9,6 +9,7 @@ var heat_data;
 var leaderboard;
 var result_data;
 var node_data;
+var frequency_data;
 
 var initial_connection = 0;
 
@@ -65,8 +66,13 @@ function handleNodeData(socket){
     socket.emit('node_data', node_data);
 }
 
+function handleFrequencyData(socket){
+    logMessage(`Frequency Data from Memory: ${JSON.stringify(frequency_data)}`);
+    socket.emit('frequency_data', frequency_data);
+}
+
 function pilotDataRequest(lapTimerSocket){
-    data_dependencies = ['leaderboard', 'pilot_data', 'class_data', 'heat_data', 'result_data', 'node_data'];
+    data_dependencies = ['leaderboard', 'pilot_data', 'class_data', 'heat_data', 'result_data', 'frequency_data'];
     lapTimerSocket.emit('load_data', {'load_types': data_dependencies});
     logMessage('Pilot data requested');
 }
@@ -126,6 +132,12 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
                     handleNodeData(socket);
                     data.load_types = data.load_types.filter(type => type !== 'node_data');
                 }
+                if (data.load_types.includes('frequency_data')) {
+                    handleFrequencyData(socket);
+                    data.load_types = data.load_types.filter(type => type !== 'frequency_data');
+                }
+
+                
 
             }            
             lapTimerSocket.emit('load_data', data);
@@ -218,11 +230,21 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
             socket.emit('result_data', data);
         });
 
+        /*
         lapTimerSocket.on('node_data', (data) => {
             logMessage(`node_data Data received: ${JSON.stringify(data)}`);
             node_data = data;
             socket.emit('node_data', data);
+        });*/
+
+        
+        lapTimerSocket.on('frequency_data', (data) => {
+            logMessage(`frequency_data Data received: ${JSON.stringify(data)}`);
+            frequency_data = data;
+            socket.emit('frequency_data', data);
         });
+
+        
 
 
 
