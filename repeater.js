@@ -8,7 +8,7 @@ var class_data;
 var heat_data;
 var leaderboard;
 var result_data;
-
+var node_data;
 
 var initial_connection = 0;
 
@@ -60,8 +60,13 @@ function handleResultData(socket){
     socket.emit('result_data', result_data);
 }
 
+function handleNodeData(socket){
+    logMessage(`Node Data from Memory: ${JSON.stringify(node_data)}`);
+    socket.emit('node_data', node_data);
+}
+
 function pilotDataRequest(lapTimerSocket){
-    data_dependencies = ['leaderboard', 'pilot_data', 'class_data', 'heat_data', 'result_data'];
+    data_dependencies = ['leaderboard', 'pilot_data', 'class_data', 'heat_data', 'result_data', 'node_data'];
     lapTimerSocket.emit('load_data', {'load_types': data_dependencies});
     logMessage('Pilot data requested');
 }
@@ -117,6 +122,11 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
                     handleResultData(socket);
                     data.load_types = data.load_types.filter(type => type !== 'result_data');
                 }
+                if (data.load_types.includes('node_data')) {
+                    handleNodeData(socket);
+                    data.load_types = data.load_types.filter(type => type !== 'node_data');
+                }
+
             }            
             lapTimerSocket.emit('load_data', data);
         });
@@ -167,12 +177,6 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
         });
 
 
-        lapTimerSocket.on('result_data', (data) => {
-            logMessage(`RD Data received: ${JSON.stringify(data)}`);
-            socket.emit('result_data', data);
-        });
-
-
         lapTimerSocket.on('current_laps', (data) => {
             logMessage(`Data received: ${JSON.stringify(data)}`);
             socket.emit('current_laps', data);
@@ -213,6 +217,14 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
             result_data = data;
             socket.emit('result_data', data);
         });
+
+        lapTimerSocket.on('node_data', (data) => {
+            logMessage(`node_data Data received: ${JSON.stringify(data)}`);
+            node_data = data;
+            socket.emit('node_data', data);
+        });
+
+
 
         socket.on('disconnect', () => {
             logMessage(`Client disconnected: ${socket.id}`);
