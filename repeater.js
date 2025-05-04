@@ -153,23 +153,81 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
             lapTimerSocket.emit('get_race_scheduled', data);
         });
 
+
+        socket.on('schedule_race', (data) => {
+            logMessage(`🔼 Schedule Race: ${JSON.stringify(data)}`);
+            lapTimerSocket.emit('schedule_race', data);
+        });
+
+        socket.on('save_laps', () => {
+            logMessage(`🔼 Save Laps`);
+            lapTimerSocket.emit('save_laps');
+        });
+
+        socket.on('discard_laps', () => {
+            logMessage(`🔼 Discard Laps`);
+            lapTimerSocket.emit('discard_laps');
+        });
+
+        socket.on('cancel_schedule_race', () => {
+            logMessage(`🔼 Cancel Schedule Race`);
+            lapTimerSocket.emit('cancel_schedule_race');
+        });
+
+        socket.on('stop_race', () => {
+            logMessage(`🔼 Stop Race`);
+            lapTimerSocket.emit('stop_race');
+        });
+
+        socket.on('stage_race', () => {
+            logMessage(`🔼 Stage Race`);
+            lapTimerSocket.emit('stage_race');
+        });
+        
+        socket.on('play_callout_text', (data) => {
+            logMessage(`🔼 Play Callout Text: ${JSON.stringify(data)}`);
+            lapTimerSocket.emit('play_callout_text', data);
+        });
+
+        socket.on('LED_solid', (data) => {
+            logMessage(`🔼 LED Solid: ${JSON.stringify(data)}`);
+            lapTimerSocket.emit('LED_solid', data);    
+        });
+
+        socket.on('LED_brightness', (data) => {
+            logMessage(`🔼 LED Brightness: ${JSON.stringify(data)}`);
+            lapTimerSocket.emit('LED_brightness', data);
+        });
+
+        socket.on('use_led_effect', (data) => {
+            logMessage(`🔼 Use LED Effect: ${JSON.stringify(data)}`);
+            lapTimerSocket.emit('use_led_effect', data);
+        });
+
+        socket.on('broadcast_message', (data) => {
+            logMessage(`🔼 Broadcast Message: ${JSON.stringify(data)}`);
+            broadcast_message.emit('LED_color', data);
+        });
+
+
+        // Lap Timer Socket Events
         lapTimerSocket.on('pi_time', (data) => {
-            logMessage(`Data received: ${JSON.stringify(data)}`);
+            logMessage(`🔽 Pi Time: ${JSON.stringify(data)}`);
             socket.emit('pi_time', data);
         });
 
         lapTimerSocket.on('current_heat', (data) => {
-            logMessage(`Current Heat Data received: ${JSON.stringify(data)}`);
+            logMessage(`🔽 Current Heat: ${JSON.stringify(data)}`);
             socket.emit('current_heat', data);
         });
 
         lapTimerSocket.on('race_scheduled', (data) => {
-            logMessage(`Data received: ${JSON.stringify(data)}`);
+            logMessage(`🔽 Race Scheduled: ${JSON.stringify(data)}`);
             socket.emit('race_scheduled', data);
         });
 
         lapTimerSocket.on('race_status', (data) => {
-            logMessage(`RS Data received: ${JSON.stringify(data)}`);
+            logMessage(`🔽 Race Status: ${JSON.stringify(data)}`);
             socket.emit('race_status', data);
         });
 
