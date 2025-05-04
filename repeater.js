@@ -98,7 +98,7 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
     });
 
     server.on('connection', (socket) => {
-        logMessage(`New client connected: ${socket.id}`);
+        logMessage(`🔼 New client connected: ${socket.id}`);
         
         if (initial_connection == 0){
             initial_connection = 1;
@@ -144,12 +144,12 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
         });
 
         socket.on('get_pi_time', (data) => {
-            logMessage(`Data received: ${JSON.stringify(data)}`);
+            logMessage(`🔼 Get Pi Time: ${JSON.stringify(data)}`);
             lapTimerSocket.emit('get_pi_time', data);
         });
    
         socket.on('get_race_scheduled', (data) => {
-            logMessage(`Data received: ${JSON.stringify(data)}`);
+            logMessage(`🔼 Get Race Scheduled: ${JSON.stringify(data)}`);
             lapTimerSocket.emit('get_race_scheduled', data);
         });
 
@@ -232,58 +232,63 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
         });
 
         lapTimerSocket.on('prestage_ready', (data) => {
-            logMessage(`PR Data received: ${JSON.stringify(data)}`);
+            logMessage(`🔽 Prestage Ready: ${JSON.stringify(data)}`);
             socket.emit('prestage_ready', data);
         });
 
         lapTimerSocket.on('stage_ready', (data) => {
-            logMessage(`SR Data received: ${JSON.stringify(data)}`);
+            logMessage(`🔽 Stage Ready: ${JSON.stringify(data)}`);
             socket.emit('stage_ready', data);
         });
 
         lapTimerSocket.on('stop_timer', (data) => {
-            logMessage(`ST Data received: ${JSON.stringify(data)}`);
+            logMessage(`🔽 Stop Timer: ${JSON.stringify(data)}`);
             socket.emit('stop_timer', data);
         });
 
 
         lapTimerSocket.on('current_laps', (data) => {
-            logMessage(`Data received: ${JSON.stringify(data)}`);
+            logMessage(`🔽 Current Laps: ${JSON.stringify(data)}`);
             socket.emit('current_laps', data);
         });
 
         lapTimerSocket.on('race_list', (data) => {
-            logMessage(`Racelist Data received: ${JSON.stringify(data)}`);
+            logMessage(`🔽 Race List: ${JSON.stringify(data)}`);
             socket.emit('race_list', data);
         });
         
 
         lapTimerSocket.on('leaderboard', (data) => {
-            logMessage(`LB Data received: ${JSON.stringify(data)}`);
+            //logMessage(`🔽 Leaderboard: ${JSON.stringify(data)}`);
+            logMessage(`🔽 Leaderboard`);
             leaderboard = data;
             socket.emit('leaderboard', data);
         });
 
         lapTimerSocket.on('pilot_data', (data) => {
-            logMessage(`PD Data received: ${JSON.stringify(data)}`);
+            //logMessage(`🔽 Pilot Data: ${JSON.stringify(data)}`);
+            logMessage(`🔽 Pilot Data`);
             pilot_data = data;
             socket.emit('pilot_data', data);
         });
 
         lapTimerSocket.on('heat_data', (data) => {
-            logMessage(`heat_data Data received: ${JSON.stringify(data)}`);
+            //logMessage(`🔽 Heat Data: ${JSON.stringify(data)}`);
+            logMessage(`🔽 Heat Data`);
             heat_data = data;
             socket.emit('heat_data', data);
         });
         
         lapTimerSocket.on('class_data', (data) => {
-            logMessage(`class_data Data received: ${JSON.stringify(data)}`);
+            //logMessage(`🔽 Class Data: ${JSON.stringify(data)}`);
+            logMessage(`🔽 Class Data`);
             class_data = data;
             socket.emit('class_data', data);
         });
 
         lapTimerSocket.on('result_data', (data) => {
-            logMessage(`result_data Data received: ${JSON.stringify(data)}`);
+            //logMessage(`🔽 Result Data: ${JSON.stringify(data)}`);
+            logMessage(`🔽 Result Data`);
             result_data = data;
             socket.emit('result_data', data);
         });
@@ -297,7 +302,8 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
 
         
         lapTimerSocket.on('frequency_data', (data) => {
-            logMessage(`frequency_data Data received: ${JSON.stringify(data)}`);
+            //logMessage(`🔽 Frequency Data: ${JSON.stringify(data)}`);
+            logMessage(`🔽 Frequency Data`);
             frequency_data = data;
             socket.emit('frequency_data', data);
         });
@@ -326,6 +332,10 @@ function stopRepeater() {
 
 function getLapTimerSocket() {
     return lapTimerSocket;
+}
+
+function sendPilotDataRequest(){
+    pilotDataRequest(lapTimerSocket);
 }
 
 
