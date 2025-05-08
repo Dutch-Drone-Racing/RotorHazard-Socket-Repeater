@@ -1,6 +1,13 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const { startRepeater, stopRepeater, getLocalIp, getLapTimerSocket, pilotDataRequest } = require('./repeater');
 
+// Voeg extra Electron configuratie toe
+app.commandLine.appendSwitch('disable-site-isolation-trials');
+app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
+app.commandLine.appendSwitch('ignore-certificate-errors');
+app.commandLine.appendSwitch('allow-insecure-localhost');
+app.commandLine.appendSwitch('disable-web-security');
+
 let mainWindow;
 
 ipcMain.on('request-pilot-data', () => {
@@ -19,7 +26,9 @@ app.whenReady().then(() => {
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
-            preload: __dirname + '/preload.js'
+            preload: __dirname + '/preload.js',
+            webSecurity: false,
+            allowRunningInsecureContent: true
         }
     });
 

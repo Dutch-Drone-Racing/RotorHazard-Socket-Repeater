@@ -90,11 +90,41 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
     logMessage(`Connecting with RotorHazard on: ${lapTimerUrl}`);
 
     lapTimerSocket = clientIo(lapTimerUrl, {
-        transports: ["polling", "websocket"]
+        transports: ["polling"],
+        upgrade: true,
+        reconnection: true,
+        reconnectionAttempts: 5,
+        reconnectionDelay: 1000,
+        timeout: 20000,
+        forceNew: true,
+        path: '/socket.io/'
+    });
+
+    lapTimerSocket.on('connect_error', (error) => {
+        logMessage(`Connection error: ${error.message}`);
+        if (error.message.includes('websocket')) {
+            logMessage('Falling back to polling transport');
+            lapTimerSocket.io.opts.transports = ['polling'];
+        }
+    });
+
+    lapTimerSocket.on('connect', () => {
+        logMessage('Successfully connected to RotorHazard server');
+    });
+
+    lapTimerSocket.on('disconnect', (reason) => {
+        logMessage(`Disconnected from RotorHazard server: ${reason}`);
     });
 
     server = io(repeaterPort, {
-        cors: { origin: "*", methods: ["GET", "POST"] }
+        cors: { 
+            origin: "*", 
+            methods: ["GET", "POST"],
+            credentials: true
+        },
+        allowEIO3: true,
+        transports: ["polling", "websocket"],
+        path: '/socket.io/'
     });
 
     server.on('connection', (socket) => {
