@@ -47,10 +47,5 @@ function clearConsole() {
 
 function requestPilotData() {
     window.api.sendPilotDataRequest();
-}
-
-function pilotDataRequest(lapTimerSocket){
-    data_dependencies = ['pilot_data'];
-    lapTimerSocket.emit('load_data', {'load_types': data_dependencies});
-    logMessage('Pilot data requested');
+    logToConsole('Pilot data requested');
 }
