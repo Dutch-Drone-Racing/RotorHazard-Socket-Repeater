@@ -323,6 +323,12 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
             socket.emit('result_data', data);
         });
 
+        lapTimerSocket.on('priority_message', (data) => {
+            //logMessage(`🔽 Result Data: ${JSON.stringify(data)}`);
+            logMessage(`🔽 Message`);
+            socket.emit('priority_message', data);
+        });
+
         /*
         lapTimerSocket.on('node_data', (data) => {
             logMessage(`node_data Data received: ${JSON.stringify(data)}`);
