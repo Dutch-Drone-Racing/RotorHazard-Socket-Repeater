@@ -37,37 +37,37 @@ function logMessage(message) {
 }
 
 function handlePilotData(socket){
-    logMessage(`Pilot Data from Memory: ${JSON.stringify(pilot_data)}`);
+    logMessage(`Pilot Data from Memory`);
     socket.emit('pilot_data', pilot_data);
 }
 
 function handleClassData(socket){
-    logMessage(`Class Data from Memory: ${JSON.stringify(class_data)}`);
+    logMessage(`Class Data from Memory`);
     socket.emit('class_data', class_data);
 }
 
 function handleHeatData(socket){
-    logMessage(`Heat Data from Memory: ${JSON.stringify(heat_data)}`);
+    logMessage(`Heat Data from Memory`);
     socket.emit('heat_data', heat_data);
 }
 
 function handleLeaderboardData(socket){
-    logMessage(`Leaderboard from Memory: ${JSON.stringify(leaderboard)}`);
+    logMessage(`Leaderboard from Memory`);
     socket.emit('leaderboard', leaderboard);
 }
 
 function handleResultData(socket){
-    logMessage(`Result Data from Memory: ${JSON.stringify(result_data)}`);
+    logMessage(`Result Data from Memory`);
     socket.emit('result_data', result_data);
 }
 
 function handleNodeData(socket){
-    logMessage(`Node Data from Memory: ${JSON.stringify(node_data)}`);
+    logMessage(`Node Data from Memory`);
     socket.emit('node_data', node_data);
 }
 
 function handleFrequencyData(socket){
-    logMessage(`Frequency Data from Memory: ${JSON.stringify(frequency_data)}`);
+    logMessage(`Frequency Data from Memory`);
     socket.emit('frequency_data', frequency_data);
 }
 
@@ -174,18 +174,18 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
         });
 
         socket.on('get_pi_time', (data) => {
-            logMessage(`🔼 Get Pi Time: ${JSON.stringify(data)}`);
+            logMessage(`🔼 Get Pi Time`);
             lapTimerSocket.emit('get_pi_time', data);
         });
    
         socket.on('get_race_scheduled', (data) => {
-            logMessage(`🔼 Get Race Scheduled: ${JSON.stringify(data)}`);
+            logMessage(`🔼 Get Race Scheduled`);
             lapTimerSocket.emit('get_race_scheduled', data);
         });
 
 
         socket.on('schedule_race', (data) => {
-            logMessage(`🔼 Schedule Race: ${JSON.stringify(data)}`);
+            logMessage(`🔼 Schedule Race`);
             lapTimerSocket.emit('schedule_race', data);
         });
 
@@ -215,75 +215,75 @@ function startRepeater(newLapTimerUrl, newRepeaterPort, logCb) {
         });
         
         socket.on('play_callout_text', (data) => {
-            logMessage(`🔼 Play Callout Text: ${JSON.stringify(data)}`);
+            logMessage(`🔼 Play Callout Text`);
             lapTimerSocket.emit('play_callout_text', data);
         });
 
         socket.on('LED_solid', (data) => {
-            logMessage(`🔼 LED Solid: ${JSON.stringify(data)}`);
+            logMessage(`🔼 LED Solid`);
             lapTimerSocket.emit('LED_solid', data);    
         });
 
         socket.on('LED_brightness', (data) => {
-            logMessage(`🔼 LED Brightness: ${JSON.stringify(data)}`);
+            logMessage(`🔼 LED Brightness`);
             lapTimerSocket.emit('LED_brightness', data);
         });
 
         socket.on('use_led_effect', (data) => {
-            logMessage(`🔼 Use LED Effect: ${JSON.stringify(data)}`);
+            logMessage(`🔼 Use LED Effect`);
             lapTimerSocket.emit('use_led_effect', data);
         });
 
         socket.on('broadcast_message', (data) => {
-            logMessage(`🔼 Broadcast Message: ${JSON.stringify(data)}`);
+            logMessage(`🔼 Broadcast Message`);
             broadcast_message.emit('LED_color', data);
         });
 
 
         // Lap Timer Socket Events
         lapTimerSocket.on('pi_time', (data) => {
-            logMessage(`🔽 Pi Time: ${JSON.stringify(data)}`);
+            logMessage(`🔽 Pi Time`);
             socket.emit('pi_time', data);
         });
 
         lapTimerSocket.on('current_heat', (data) => {
-            logMessage(`🔽 Current Heat: ${JSON.stringify(data)}`);
+            logMessage(`🔽 Current Heat`);
             socket.emit('current_heat', data);
         });
 
         lapTimerSocket.on('race_scheduled', (data) => {
-            logMessage(`🔽 Race Scheduled: ${JSON.stringify(data)}`);
+            logMessage(`🔽 Race Scheduled`);
             socket.emit('race_scheduled', data);
         });
 
         lapTimerSocket.on('race_status', (data) => {
-            logMessage(`🔽 Race Status: ${JSON.stringify(data)}`);
+            logMessage(`🔽 Race Status`);
             socket.emit('race_status', data);
         });
 
         lapTimerSocket.on('prestage_ready', (data) => {
-            logMessage(`🔽 Prestage Ready: ${JSON.stringify(data)}`);
+            logMessage(`🔽 Prestage Ready`);
             socket.emit('prestage_ready', data);
         });
 
         lapTimerSocket.on('stage_ready', (data) => {
-            logMessage(`🔽 Stage Ready: ${JSON.stringify(data)}`);
+            logMessage(`🔽 Stage Ready`);
             socket.emit('stage_ready', data);
         });
 
         lapTimerSocket.on('stop_timer', (data) => {
-            logMessage(`🔽 Stop Timer: ${JSON.stringify(data)}`);
+            logMessage(`🔽 Stop Timer`);
             socket.emit('stop_timer', data);
         });
 
 
         lapTimerSocket.on('current_laps', (data) => {
-            logMessage(`🔽 Current Laps: ${JSON.stringify(data)}`);
+            logMessage(`🔽 Current Laps`);
             socket.emit('current_laps', data);
         });
 
         lapTimerSocket.on('race_list', (data) => {
-            logMessage(`🔽 Race List: ${JSON.stringify(data)}`);
+            logMessage(`🔽 Race List`);
             socket.emit('race_list', data);
         });
         
